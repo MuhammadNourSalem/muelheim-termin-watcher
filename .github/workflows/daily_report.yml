@@ -1,0 +1,42 @@
+name: Daily Report
+
+on:
+  schedule:
+    # الساعة 00:00 بتوقيت سوريا (UTC+3 طول السنة، بدون توقيت صيفي)
+    # = 21:00 UTC باليوم السابق
+    - cron: "0 21 * * *"
+  workflow_dispatch: {}  # يسمح بتشغيل يدوي فوري للتجربة
+
+jobs:
+  send-daily-report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install requests
+        run: pip install requests
+
+      - name: Send daily report and reset log
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python daily_report.py
+
+      - name: Commit reset log
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add run_log.json
+          git diff --staged --quiet || git commit -m "reset daily log [skip ci]"
+          git pull --rebase origin main || true
+          git push || true
