@@ -118,5 +118,9 @@
   {
     "timestamp": "2026-08-24T16:19:12",
     "available": true
+  },
+  {
+    "timestamp": "2026-08-24T16:58:55",
+    "available": false
   }
 ]
