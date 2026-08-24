@@ -78,5 +78,9 @@
   {
     "timestamp": "2026-08-24T10:00:29",
     "available": false
+  },
+  {
+    "timestamp": "2026-08-24T10:38:47",
+    "available": true
   }
 ]
